@@ -1,0 +1,96 @@
+﻿@using DashboardData.Models
+@using DashboardData.Services
+@using DashboardData.Components.UI
+@page "/dashboard"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject ISensorService SensorService
+@inject NavigationManager NavManager
+
+<!-- In MyDashboard.razor -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <!-- Parameters are passed like simple HTML attributes -->
+        <KpiCard Title="Total Sensors" Value="@TotalSensors.ToString()"
+                 BackgroundColorClass="bg-primary" IconClass="bi-box-seam" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <KpiCard Title="Global Average" Value="@($"{Average:F1} °C")"
+                 BackgroundColorClass="bg-success" IconClass="bi-bullseye" />
+    </div>
+    <div class="col-md-4 mb-3">
+        <KpiCard Title="Max Alert" Value="@($"{MaxValue:F1} °C")"
+                 BackgroundColorClass="bg-danger" IconClass="bi-exclamation-triangle-fill" />
+    </div>
+</div>
+    <button class="btn btn-outline-secondary mb-3" @onclick="() => ShowAsCards = !ShowAsCards">
+        <i class="bi bi-arrow-left-right"></i> Toggle View
+    </button>
+
+
+
+@if (Sensors == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <button class="btn btn-secondary " @onclick="LoadAll"><i class="bi bi-arrow-clockwise"></i> All Sensors</button>
+    <button class="btn btn-warning " @onclick="LoadCritical"><i class="bi bi-exclamation-triangle"></i> Alertes (> 30.0)</button>
+    <a href="/edit-sensor" class="btn btn-success "> <i class="bi bi-plus"></i> New Sensor</a>
+    <!-- Link the child's event to the parent's DeleteSensor method -->
+    <SensorTable Sensors="Sensors" OnDeleteClicked="DeleteSensor" />
+
+}   
+
+    @if (ShowAsCards)
+    {
+        <div class="row">
+            @foreach (var s in Sensors)
+            {
+                <div class="col-md-3 mb-3">
+                    <SensorCard Sensor="s" />
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <SensorTable Sensors="Sensors" OnDeleteClicked="DeleteSensor" />
+    }
+
+@code {
+    private List<SensorData> Sensors;
+    private bool ShowAsCards = true;  
+
+    private int TotalSensors;
+    private double Average;
+    private double MaxValue ;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAll();
+    }
+
+    private async Task LoadAll()
+    {
+        Sensors = await SensorService.GetSensorsAsync();
+        TotalSensors = await SensorService.GetTotalCountAsync();
+        Average = await SensorService.GetAverageValueAsync();
+        MaxValue = await SensorService.GetMaxValueAsync();
+    }
+
+    private async Task LoadCritical()
+    {
+        Sensors = await SensorService.GetCriticalSensorsAsync(30.0);
+    }
+
+    private async Task DeleteSensor(int id)
+    {
+        if (await SensorService.GetSensorByIdAsync(id) != null)
+        {
+            await SensorService.DeleteSensorAsync(id);
+            await LoadAll();
+        }
+    }
+}

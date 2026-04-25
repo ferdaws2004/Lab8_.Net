@@ -1,0 +1,18 @@
+@using Models
+@using Microsoft.AspNetCore.Components
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body d-flex align-items-center">
+        <i class="bi bi-thermometer-half display-4 me-3 text-primary"></i>
+        <div>
+            <h5 class="card-title mb-1">@Sensor?.Name</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Value: @Sensor?.Value</h6>
+            <p class="card-text mb-0"><small class="text-muted">@Sensor?.Location?.Name</small></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public SensorData Sensor { get; set; }
+}
