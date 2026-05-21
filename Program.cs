@@ -3,12 +3,15 @@ using DashboardData.Data;
 using DashboardData.Models;
 using DashboardData.Services;
 using Microsoft.EntityFrameworkCore;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRadzenComponents();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 //===== Configure Entity Framework Core with SQLite ======
 

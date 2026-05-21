@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "F2lzvR1umSM=",
+  "dgSpecHash": "8ti4edvOjwk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\msi\\Desktop\\Dev_.net\\DashboardData-Lab8\\DashboardData\\DashboardData.csproj",
+  "projectFilePath": "C:\\Users\\msi\\Desktop\\Dev_.net\\DashboardData-Lab9\\Lab9\\DashboardData.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\msi\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\microsoft.aspnetcore.app.internal.assets\\10.0.2\\microsoft.aspnetcore.app.internal.assets.10.0.2.nupkg.sha512",
@@ -25,6 +25,7 @@
     "C:\\Users\\msi\\.nuget\\packages\\microsoft.visualstudio.solutionpersistence\\1.0.52\\microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\msi\\.nuget\\packages\\radzen.blazor\\10.3.1\\radzen.blazor.10.3.1.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.11\\sqlitepclraw.bundle_e_sqlite3.2.1.11.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\sqlitepclraw.core\\2.1.11\\sqlitepclraw.core.2.1.11.nupkg.sha512",
     "C:\\Users\\msi\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.11\\sqlitepclraw.lib.e_sqlite3.2.1.11.nupkg.sha512",

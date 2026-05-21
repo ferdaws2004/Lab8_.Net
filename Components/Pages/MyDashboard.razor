@@ -26,7 +26,46 @@
     <button class="btn btn-outline-secondary mb-3" @onclick="() => ShowAsCards = !ShowAsCards">
         <i class="bi bi-arrow-left-right"></i> Toggle View
     </button>
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-bar-chart-fill text-primary"></i> Average Temperatures</h5>
+            </div>
+            <div class="card-body">
+                <RadzenChart SeriesClick="@OnChartClick">
+                    <RadzenColumnSeries Data="@LocationStats" CategoryProperty="LocationName" ValueProperty="AverageValue" Title="Average" Fill="#0d6efd" />
+                    <RadzenValueAxis Formatter="@((value) => Math.Round((double)value, 1) + " °C")" />
+                    <RadzenLegend Visible="false" />
+                </RadzenChart>
+                
+            </div>
+        </div>
+    </div>
 
+    <div class="col-md-4">
+    <div class="card shadow-sm h-100">
+        <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="bi bi-speedometer2 text-danger"></i> Max Detected Value</h5>
+        </div>
+        <div class="card-body text-center d-flex flex-column justify-content-center">
+            
+            <RadzenRadialGauge Style="width: 100%; height: 250px;">
+                <RadzenRadialGaugeScale StartAngle="0" EndAngle="100" Step="20">
+                    <RadzenRadialGaugeScalePointer Value="@MaxValue" Length="0.6" ShowValue="true" />
+                    <!-- Green zone -->
+                    <RadzenRadialGaugeScaleRange From="0" To="40" Fill="green" />
+                    <!-- Orange zone -->
+                    <RadzenRadialGaugeScaleRange From="40" To="70" Fill="orange" />
+                    <!-- Red zone -->
+                    <RadzenRadialGaugeScaleRange From="70" To="100" Fill="red" />
+                </RadzenRadialGaugeScale>
+            </RadzenRadialGauge>
+
+        </div>
+    </div>
+</div>
+</div>
 
 
 @if (Sensors == null)
@@ -39,7 +78,7 @@ else
     <button class="btn btn-warning " @onclick="LoadCritical"><i class="bi bi-exclamation-triangle"></i> Alertes (> 30.0)</button>
     <a href="/edit-sensor" class="btn btn-success "> <i class="bi bi-plus"></i> New Sensor</a>
     <!-- Link the child's event to the parent's DeleteSensor method -->
-    <SensorTable Sensors="Sensors" OnDeleteClicked="DeleteSensor" />
+    <SensorTable Sensors="FilteredSensors" OnDeleteClicked="DeleteSensor" />
 
 }   
 
@@ -56,7 +95,7 @@ else
     }
     else
     {
-        <SensorTable Sensors="Sensors" OnDeleteClicked="DeleteSensor" />
+        <SensorTable Sensors="FilteredSensors" OnDeleteClicked="DeleteSensor" />
     }
 
 @code {
@@ -67,9 +106,12 @@ else
     private double Average;
     private double MaxValue ;
 
+    private List<LocationStat> LocationStats = new();
+
     protected override async Task OnInitializedAsync()
     {
         await LoadAll();
+        LocationStats = await SensorService.GetAverageValueByLocationAsync();
     }
 
     private async Task LoadAll()
@@ -93,4 +135,24 @@ else
             await LoadAll();
         }
     }
+    private string? SelectedLocationFilter = null;
+
+    // This method will be called by Radzen
+    private void OnChartClick(SeriesClickEventArgs args)
+    {
+        // args.Category contains the clicked location name (e.g., "Lab")
+        string clickedLocation = args.Category.ToString();
+
+        // Toggle: if we click on the same one again, we clear the filter
+        if (SelectedLocationFilter == clickedLocation)
+            SelectedLocationFilter = null;
+        else
+            SelectedLocationFilter = clickedLocation;
+    }
+
+    // We create a computed property that filters the list for the table
+    private List<SensorData> FilteredSensors => SelectedLocationFilter == null 
+        ? Sensors 
+        : Sensors.Where(s => s.Location?.Name == SelectedLocationFilter).ToList();
+
 }
